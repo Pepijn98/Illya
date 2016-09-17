@@ -255,7 +255,7 @@ namespace Illya_Chan
                                         await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
                                         await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
                                     }
-                                    catch (Exception p)
+                                    catch
                                     {
                                         await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
                                     }
@@ -275,7 +275,7 @@ namespace Illya_Chan
                                         await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
                                         await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
                                     }
-                                    catch (Exception p)
+                                    catch
                                     {
                                         await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
                                     }
@@ -319,7 +319,7 @@ namespace Illya_Chan
                                         await e.Message.MentionedUsers.FirstOrDefault().Kick();
                                         await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
                                     }
-                                    catch (Exception p)
+                                    catch
                                     {
                                         await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
                                     }
@@ -339,7 +339,7 @@ namespace Illya_Chan
                                         await e.Message.MentionedUsers.FirstOrDefault().Kick();
                                         await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
                                     }
-                                    catch (Exception p)
+                                    catch
                                     {
                                         await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
                                     }
@@ -359,7 +359,7 @@ namespace Illya_Chan
                                         await e.Message.MentionedUsers.FirstOrDefault().Kick();
                                         await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
                                     }
-                                    catch (Exception p)
+                                    catch
                                     {
                                         await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
                                     }
