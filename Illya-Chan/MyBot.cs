@@ -52,9 +52,8 @@ namespace Illya_Chan
 
             randomTexts = new string[]
             {
-                "SirZechs is a poopyhead LUUL",
-                "Ohh baby fuck me in the ass",
-                "Senpai desu~"
+                "Senpai desu~",
+                "More random text"
             };
 
             discord = new DiscordClient(x =>
