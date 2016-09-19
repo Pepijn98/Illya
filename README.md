@@ -6,5 +6,6 @@ I'm working on this bot for my own server. Maybe you've noticed I use the roles 
 Although that is usefull I'm looking into changing it so more servers can use the bot.
 Any feedback, suggestions w/e is always welcome!
 
-My server: https://discord.gg/dyhTztS
-You can ask me anything there 😉
+- Discord server invite link: http://gamersnationonline.xyz/discord/ You can ask me anything there 😉
+- Forum: http://gamersnationonline.xyz/
+- My personal website: http://haremkingonline.xyz/
