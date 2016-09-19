@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using System.Xml;
 
 namespace Illya_Chan
 {
@@ -15,6 +16,7 @@ namespace Illya_Chan
 
         Random rand;
 
+        public string token;
         string[] Selfies;
         string[] randomTexts;
         public MyBot()
@@ -80,9 +82,21 @@ namespace Illya_Chan
             RegisterBanCommand();
             RegisterKickCommand();
 
+            using (XmlReader reader = XmlReader.Create("token.xml"))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        reader.ReadToFollowing("token");
+                        token = reader.ReadInnerXml();
+                    }
+                }
+            }
+
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect("Bot <token>");
+                await discord.Connect(token);
             });
         }
 
