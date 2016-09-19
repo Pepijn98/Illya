@@ -83,7 +83,7 @@ namespace Illya_Chan
 
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect("Bot MjIzNDY3MzE1MzE5MDEzMzc2.CrNzWw.tOtNQi3m4LWd0MqV_1-IWh92ipE");
+                await discord.Connect("Bot <token>");
             });
         }
 
