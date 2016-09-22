@@ -199,15 +199,69 @@ namespace Illya_Chan
                     });
         }
 
+        //private void RegisterPurgeCommand()
+        //{
+        //    commands.CreateCommand("purge")
+        //        .Alias(new string[] { "prg" }) //add alias
+        //        .Alias(new string[] { "clr" }) //add alias
+        //        .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
+        //        .Do(async (e) =>
+        //        {
+        //            Message[] messagesToDelete;
+        //            messagesToDelete = await e.Channel.DownloadMessages(50);
+        //        });
+        //}
+
         private void RegisterPurgeCommand()
         {
             commands.CreateCommand("purge")
                 .Alias(new string[] { "prg" }) //add alias
-                .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
+                .Alias(new string[] { "clr" }) //add alias
                 .Do(async (e) =>
                 {
-                    Message[] messagesToDelete;
-                    messagesToDelete = await e.Channel.DownloadMessages(5);
+                    try
+                    {
+                        Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
+                        Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
+                        Role Veteran = e.Server.FindRoles("Veteran").FirstOrDefault();
+                        Role Learning_Veteran = e.Server.FindRoles("Learning_Veteran").FirstOrDefault();
+                        if (e.User.HasRole(Elders))
+                        {
+                            Message[] messagesToDelete;
+                            messagesToDelete = await e.Channel.DownloadMessages(5);
+
+                            await e.Channel.DeleteMessages(messagesToDelete);
+                        }
+                        else if (e.User.HasRole(Judge))
+                        {
+                            Message[] messagesToDelete;
+                            messagesToDelete = await e.Channel.DownloadMessages(5);
+
+                            await e.Channel.DeleteMessages(messagesToDelete);
+                        }
+                        else if (e.User.HasRole(Veteran))
+                        {
+                            Message[] messagesToDelete;
+                            messagesToDelete = await e.Channel.DownloadMessages(5);
+
+                            await e.Channel.DeleteMessages(messagesToDelete);
+                        }
+                        else if (e.User.HasRole(Learning_Veteran))
+                        {
+                            Message[] messagesToDelete;
+                            messagesToDelete = await e.Channel.DownloadMessages(5);
+
+                            await e.Channel.DeleteMessages(messagesToDelete);
+                        }
+                        else
+                        {
+                            await e.Channel.SendMessage(e.User.Mention + " You're not a Learning_Veteran+!");
+                        }
+                    }
+                    catch
+                    {
+                        await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
+                    }
                 });
         }
 
