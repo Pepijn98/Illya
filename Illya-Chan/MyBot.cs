@@ -16,6 +16,7 @@ namespace Illya_Chan
 
         Random rand;
 
+        //Makes token string for later and 2 strings for some random commands
         public string token;
         string[] Selfies;
         string[] randomTexts;
@@ -23,6 +24,7 @@ namespace Illya_Chan
         {
             rand = new Random();
 
+            //Adds images for the selfie commands
             Selfies = new string[]
             {
                 "selfie/Illya_1.jpg",
@@ -52,6 +54,7 @@ namespace Illya_Chan
                 "selfie/Illya_25.jpg"
             };
 
+            //Adds texts for the randome text command
             randomTexts = new string[]
             {
                 "Senpai desu~",
@@ -64,14 +67,17 @@ namespace Illya_Chan
                 x.LogHandler = Log;
             });
 
+            //Select what prefix to use
             discord.UsingCommands(x =>
             {
                 x.PrefixChar = '-';
                 x.AllowMentionPrefix = true;
             });
 
+            //Gets the command service
             commands = discord.GetService<CommandService>();
 
+            //Registers all commands
             RegisterPingCommand();
             RegisterSelfieCommand();
             RegisterRandomtextCommand();
@@ -82,6 +88,7 @@ namespace Illya_Chan
             RegisterBanCommand();
             RegisterKickCommand();
 
+            //Reads token from .xml file and puts it in the token string we made earlier
             using (XmlReader reader = XmlReader.Create("token.xml"))
             {
                 while (reader.Read())
@@ -94,12 +101,14 @@ namespace Illya_Chan
                 }
             }
 
+            //Logs in to discord with the given token in the string
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect(token);
             });
         }
 
+        //All commands
         private void RegisterPingCommand()
         {
             commands.CreateCommand("ping")
@@ -133,53 +142,14 @@ namespace Illya_Chan
 
         private void RegisterPurgeCommand()
         {
+
             commands.CreateCommand("purge")
                 .Alias(new string[] { "prg" }) //add alias
+                .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
                 .Do(async (e) =>
                 {
-                    try
-                    {
-                        Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
-                        Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
-                        Role Veteran = e.Server.FindRoles("Veteran").FirstOrDefault();
-                        Role Learning_Veteran = e.Server.FindRoles("Learning_Veteran").FirstOrDefault();
-                        if (e.User.HasRole(Elders))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else if (e.User.HasRole(Judge))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else if (e.User.HasRole(Veteran))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else if (e.User.HasRole(Learning_Veteran))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else
-                        {
-                            await e.Channel.SendMessage(e.User.Mention + " You're not a Learning_Veteran+!");
-                        }
-                    }
-                    catch
-                    {
-                        await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
-                    }
+                        Message[] messagesToDelete;
+                        messagesToDelete = await e.Channel.DownloadMessages(5);
                 });
         }
 
