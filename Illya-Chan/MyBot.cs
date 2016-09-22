@@ -138,7 +138,8 @@ namespace Illya_Chan
 
         private void RegisterRandomtextCommand()
         {
-            commands.CreateCommand("text")
+            commands.CreateCommand("randomtext")
+                .Alias(new string[] { "rt" }) //add alias
                 .Do(async (e) =>
                 {
                     int randomTextIndex = rand.Next(randomTexts.Length);
@@ -150,6 +151,7 @@ namespace Illya_Chan
         private void RegisterLoveCommand()
         {
             commands.CreateCommand("Do you love me?")
+                .Alias(new string[] { "Do you love me" }) //add alias
                         .Do(async (e) =>
                         {
                             try
