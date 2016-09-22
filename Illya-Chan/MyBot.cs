@@ -57,8 +57,16 @@ namespace Illya_Chan
             //Adds texts for the randome text command
             randomTexts = new string[]
             {
-                "Senpai desu~",
-                "More random text"
+                "would you like your eggs scrambled or fried?",
+                "I am jelly ;-;",
+                "Carpet.",
+                "I hid the body 👍",
+                "UNICORNS POOPED IN MY BED!",
+                "whatever you do, don't turn off the light tonight!",
+                "Do you have a pickle?",
+                "Sorry. I'm to busy giving my unicorn a bath.",
+                "Go to the bathroom and lock the door if u hear anything run!!",
+                "I'm pregnant, I think you're the dad."
             };
 
             discord = new DiscordClient(x =>
@@ -81,12 +89,11 @@ namespace Illya_Chan
             RegisterPingCommand();
             RegisterSelfieCommand();
             RegisterRandomtextCommand();
-            RegisterPurgeCommand();
-            RegisterTestCommand();
             RegisterLoveCommand();
             RegisterHugCommand();
-            RegisterBanCommand();
+            RegisterPurgeCommand();
             RegisterKickCommand();
+            RegisterBanCommand();
 
             //Reads token from .xml file and puts it in the token string we made earlier
             using (XmlReader reader = XmlReader.Create("token.xml"))
@@ -140,28 +147,6 @@ namespace Illya_Chan
                 });
         }
 
-        private void RegisterPurgeCommand()
-        {
-
-            commands.CreateCommand("purge")
-                .Alias(new string[] { "prg" }) //add alias
-                .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
-                .Do(async (e) =>
-                {
-                        Message[] messagesToDelete;
-                        messagesToDelete = await e.Channel.DownloadMessages(5);
-                });
-        }
-
-        private void RegisterTestCommand()
-        {
-            commands.CreateCommand("Test")
-                .Do(async (e) =>
-                {
-                    await e.Channel.SendMessage(e.User.Mention + " What dafuq do you want!?!?");
-                });
-        }
-
         private void RegisterLoveCommand()
         {
             commands.CreateCommand("Do you love me?")
@@ -181,7 +166,7 @@ namespace Illya_Chan
                             }
                             catch
                             {
-                                await e.Channel.SendMessage("Who are you!? What is this!? Where am I!? Why am I here!????");
+                                await e.Channel.SendMessage("Who are you!? What is this!? Where am I!? Why am I here!??");
                             }
                         });
         }
@@ -212,68 +197,16 @@ namespace Illya_Chan
                     });
         }
 
-        private void RegisterBanCommand()
+        private void RegisterPurgeCommand()
         {
-            commands.CreateCommand("ban")
-                .Parameter("a", ParameterType.Unparsed)
-                    .Alias(new string[] { "b" }) //add alias
-                    .Do(async (e) =>
-                    {
-
-                        try
-                        {
-                            Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
-                            Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
-                            if (e.User.HasRole(Elders))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
-                                        await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
-                                    }
-                                }
-                            }
-                            else if (e.User.HasRole(Judge))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
-                                        await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                await e.Channel.SendMessage(e.User.Mention + " You're not a Judge+!");
-                            }
-                        }
-                        catch
-                        {
-                            await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
-                        }
-                    });
+            commands.CreateCommand("purge")
+                .Alias(new string[] { "prg" }) //add alias
+                .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
+                .Do(async (e) =>
+                {
+                    Message[] messagesToDelete;
+                    messagesToDelete = await e.Channel.DownloadMessages(5);
+                });
         }
 
         private void RegisterKickCommand()
@@ -351,6 +284,70 @@ namespace Illya_Chan
                             else
                             {
                                 await e.Channel.SendMessage(e.User.Mention + " You're not a Veteran+!");
+                            }
+                        }
+                        catch
+                        {
+                            await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
+                        }
+                    });
+        }
+
+        private void RegisterBanCommand()
+        {
+            commands.CreateCommand("ban")
+                .Parameter("a", ParameterType.Unparsed)
+                    .Alias(new string[] { "b" }) //add alias
+                    .Do(async (e) =>
+                    {
+
+                        try
+                        {
+                            Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
+                            Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
+                            if (e.User.HasRole(Elders))
+                            {
+                                await e.Channel.SendMessage(e.GetArg("a"));
+                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
+                                {
+                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
+                                        await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
+                                    }
+                                    catch
+                                    {
+                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
+                                    }
+                                }
+                            }
+                            else if (e.User.HasRole(Judge))
+                            {
+                                await e.Channel.SendMessage(e.GetArg("a"));
+                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
+                                {
+                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
+                                        await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
+                                    }
+                                    catch
+                                    {
+                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                await e.Channel.SendMessage(e.User.Mention + " You're not a Judge+!");
                             }
                         }
                         catch
