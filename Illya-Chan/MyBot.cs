@@ -216,81 +216,25 @@ namespace Illya_Chan
             commands.CreateCommand("kick")
                 .Parameter("a", ParameterType.Unparsed)
                     .Alias(new string[] { "k" }) //add alias
+                    .AddCheck((cm, u, ch) => u.ServerPermissions.KickMembers)
                     .Do(async (e) =>
                     {
-                        try
+                        await e.Channel.SendMessage(e.GetArg("a"));
+                        if (e.Message.MentionedUsers.FirstOrDefault() == null)
                         {
-                            Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
-                            Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
-                            Role Veteran = e.Server.FindRoles("Veteran").FirstOrDefault();
-                            if (e.User.HasRole(Elders))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Message.MentionedUsers.FirstOrDefault().Kick();
-                                        await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
-                                    }
-                                }
-                            }
-                            else if (e.User.HasRole(Judge))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Message.MentionedUsers.FirstOrDefault().Kick();
-                                        await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
-                                    }
-                                }
-                            }
-                            else if (e.User.HasRole(Veteran))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Message.MentionedUsers.FirstOrDefault().Kick();
-                                        await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                await e.Channel.SendMessage(e.User.Mention + " You're not a Veteran+!");
-                            }
+                            await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
                         }
-                        catch
+                        else
                         {
-                            await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
+                            try
+                            {
+                                await e.Message.MentionedUsers.FirstOrDefault().Kick();
+                                await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
+                            }
+                            catch
+                            {
+                                //await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
+                            }
                         }
                     });
         }
@@ -300,61 +244,25 @@ namespace Illya_Chan
             commands.CreateCommand("ban")
                 .Parameter("a", ParameterType.Unparsed)
                     .Alias(new string[] { "b" }) //add alias
+                    .AddCheck((cm, u, ch) => u.ServerPermissions.BanMembers)
                     .Do(async (e) =>
                     {
-
-                        try
+                        await e.Channel.SendMessage(e.GetArg("a"));
+                        if (e.Message.MentionedUsers.FirstOrDefault() == null)
                         {
-                            Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
-                            Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
-                            if (e.User.HasRole(Elders))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
-                                        await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
-                                    }
-                                }
-                            }
-                            else if (e.User.HasRole(Judge))
-                            {
-                                await e.Channel.SendMessage(e.GetArg("a"));
-                                if (e.Message.MentionedUsers.FirstOrDefault() == null)
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
-                                        await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
-                                    }
-                                    catch
-                                    {
-                                        await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                await e.Channel.SendMessage(e.User.Mention + " You're not a Judge+!");
-                            }
+                            await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
                         }
-                        catch
+                        else
                         {
-                            await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
+                            try
+                            {
+                                await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
+                                await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
+                            }
+                            catch
+                            {
+                                //await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
+                            }
                         }
                     });
         }
