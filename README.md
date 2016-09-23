@@ -2,10 +2,9 @@
 - (WIP) Discord bot made for my own server.
 - Creator: Pepijn (HaremKing)
 
-I'm working on this bot for my own server. Maybe you've noticed I use the roles to make commands only accessible for them like kick/ban commands.
-Although that is usefull I'm looking into changing it so more servers can use the bot.
+I'm working on this bot as a hobby.
 Any feedback, suggestions w/e is always welcome!
 
-- Discord server invite link: http://gamersnationonline.xyz/discord/ You can ask me anything there 😉
-- Forum: http://gamersnationonline.xyz/
 - My personal website: http://haremkingonline.xyz/
+
+(Project is onhold since some other stuff came up)
