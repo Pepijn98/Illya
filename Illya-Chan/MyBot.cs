@@ -156,8 +156,8 @@ namespace Illya_Chan
                         {
                             try
                             {
-                                Role Senpai = e.Server.FindRoles("Senpai").FirstOrDefault();
-                                if (e.User.HasRole(Senpai))
+                                Role Owner = e.Server.FindRoles("Owner").FirstOrDefault();
+                                if (e.User.HasRole(Owner))
                                 {
                                     await e.Channel.SendMessage("Of course Senpai!");
                                 }
@@ -182,8 +182,8 @@ namespace Illya_Chan
                     {
                         try
                         {
-                            Role Senpai = e.Server.FindRoles("Senpai").FirstOrDefault();
-                            if (e.User.HasRole(Senpai))
+                            Role Owner = e.Server.FindRoles("Owner").FirstOrDefault();
+                            if (e.User.HasRole(Owner))
                             {
                                 await e.Channel.SendMessage("Ohh pls Senpai stop it >///<");
                             }
@@ -221,46 +221,38 @@ namespace Illya_Chan
                 {
                     try
                     {
-                        Role Elders = e.Server.FindRoles("Elders").FirstOrDefault();
-                        Role Judge = e.Server.FindRoles("Judge").FirstOrDefault();
-                        Role Veteran = e.Server.FindRoles("Veteran").FirstOrDefault();
-                        Role Learning_Veteran = e.Server.FindRoles("Learning_Veteran").FirstOrDefault();
-                        if (e.User.HasRole(Elders))
+                        Role Owner = e.Server.FindRoles("Owner").FirstOrDefault();
+                        Role Admins = e.Server.FindRoles("Admins").FirstOrDefault();
+                        Role Moderators = e.Server.FindRoles("Moderators").FirstOrDefault();
+                        if (e.User.HasRole(Owner))
                         {
                             Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
+                            messagesToDelete = await e.Channel.DownloadMessages(50);
 
                             await e.Channel.DeleteMessages(messagesToDelete);
                         }
-                        else if (e.User.HasRole(Judge))
+                        else if (e.User.HasRole(Admins))
                         {
                             Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
+                            messagesToDelete = await e.Channel.DownloadMessages(50);
 
                             await e.Channel.DeleteMessages(messagesToDelete);
                         }
-                        else if (e.User.HasRole(Veteran))
+                        else if (e.User.HasRole(Moderators))
                         {
                             Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else if (e.User.HasRole(Learning_Veteran))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(5);
+                            messagesToDelete = await e.Channel.DownloadMessages(50);
 
                             await e.Channel.DeleteMessages(messagesToDelete);
                         }
                         else
                         {
-                            await e.Channel.SendMessage(e.User.Mention + " You're not a Learning_Veteran+!");
+                            await e.Channel.SendMessage(e.User.Mention + " You're not a Moderator+!");
                         }
                     }
                     catch
                     {
-                        await e.Channel.SendMessage("This server does not have the `Elders` role! Please add it for this command to work");
+                        await e.Channel.SendMessage("This server does not have the `Owner, Admins or Moderators` role! Please add it for this command to work");
                     }
                 });
         }
