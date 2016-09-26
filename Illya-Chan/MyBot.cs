@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.Audio;
 using System.Xml;
 
 namespace Illya_Chan
@@ -115,7 +116,6 @@ namespace Illya_Chan
             });
         }
 
-        //All commands
         private void RegisterPingCommand()
         {
             commands.CreateCommand("ping")
@@ -199,61 +199,18 @@ namespace Illya_Chan
                     });
         }
 
-        //private void RegisterPurgeCommand()
-        //{
-        //    commands.CreateCommand("purge")
-        //        .Alias(new string[] { "prg" }) //add alias
-        //        .Alias(new string[] { "clr" }) //add alias
-        //        .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
-        //        .Do(async (e) =>
-        //        {
-        //            Message[] messagesToDelete;
-        //            messagesToDelete = await e.Channel.DownloadMessages(50);
-        //        });
-        //}
-
         private void RegisterPurgeCommand()
         {
             commands.CreateCommand("purge")
                 .Alias(new string[] { "prg" }) //add alias
                 .Alias(new string[] { "clr" }) //add alias
+                .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
                 .Do(async (e) =>
                 {
-                    try
-                    {
-                        Role Owner = e.Server.FindRoles("Owner").FirstOrDefault();
-                        Role Admins = e.Server.FindRoles("Admins").FirstOrDefault();
-                        Role Moderators = e.Server.FindRoles("Moderators").FirstOrDefault();
-                        if (e.User.HasRole(Owner))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(50);
+                    Message[] messagesToDelete;
+                    messagesToDelete = await e.Channel.DownloadMessages(50);
 
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else if (e.User.HasRole(Admins))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(50);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else if (e.User.HasRole(Moderators))
-                        {
-                            Message[] messagesToDelete;
-                            messagesToDelete = await e.Channel.DownloadMessages(50);
-
-                            await e.Channel.DeleteMessages(messagesToDelete);
-                        }
-                        else
-                        {
-                            await e.Channel.SendMessage(e.User.Mention + " You're not a Moderator+!");
-                        }
-                    }
-                    catch
-                    {
-                        await e.Channel.SendMessage("This server does not have the `Owner, Admins or Moderators` role! Please add it for this command to work");
-                    }
+                    await e.Channel.DeleteMessages(messagesToDelete);
                 });
         }
 
@@ -266,7 +223,7 @@ namespace Illya_Chan
                     .Do(async (e) =>
                     {
                         await e.Channel.SendMessage(e.GetArg("a"));
-                        if (e.Message.MentionedUsers.FirstOrDefault() == null)
+                        if (e.Message.MentionedUsers.Count() < 1)
                         {
                             await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
                         }
@@ -275,11 +232,11 @@ namespace Illya_Chan
                             try
                             {
                                 await e.Message.MentionedUsers.FirstOrDefault().Kick();
-                                await e.Channel.SendMessage(e.GetArg("Kick") + " was kicked!");
+                                await e.Channel.SendMessage(e.Message.MentionedUsers.FirstOrDefault() + " was kicked!");
                             }
                             catch
                             {
-                                //await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
+                                await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
                             }
                         }
                     });
@@ -294,7 +251,7 @@ namespace Illya_Chan
                     .Do(async (e) =>
                     {
                         await e.Channel.SendMessage(e.GetArg("a"));
-                        if (e.Message.MentionedUsers.FirstOrDefault() == null)
+                        if (e.Message.MentionedUsers.Count() < 1)
                         {
                             await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
                         }
@@ -303,11 +260,11 @@ namespace Illya_Chan
                             try
                             {
                                 await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
-                                await e.Channel.SendMessage(e.GetArg("Ban") + " was banned!");
+                                await e.Channel.SendMessage(e.Message.MentionedUsers.FirstOrDefault() + " was banned!");
                             }
                             catch
                             {
-                                //await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
+                                await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
                             }
                         }
                     });
