@@ -2,9 +2,7 @@
 - (WIP) Discord bot made for my own server.
 - Creator: Pepijn (HaremKing)
 
-I'm working on this bot as a hobby, mainly for the server I own.
+I'm working on this bot as a hobby, so I won't have much time.
 Any feedback, suggestions w/e is always welcome!
 
 - My personal website: http://haremkingonline.xyz/
-- Discord server forum: http://dailyanimes.xyz/
-- Discord server invite link: http://join.dailyanimes.xyz/
