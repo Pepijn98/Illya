@@ -6,3 +6,5 @@ I'm working on this bot as a hobby, so I won't have much time.
 Any feedback, suggestions w/e is always welcome!
 
 - My personal website: http://haremkingonline.xyz/
+- Forum: http://dailyanimes.xyz/
+- Discord: http://join.dailyanimes.xyz/
