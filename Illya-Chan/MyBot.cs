@@ -19,6 +19,9 @@ namespace Illya_Chan
 
         //Makes token string for later and 2 strings for some random commands
         public string token;
+        public Game CurrentGame { get; private set; }
+        public const string AppName = "Illya-Chan (bot)";
+        public const string AppUrl = "http://haremkingonline.xyz";
         string[] Selfies;
         string[] randomTexts;
         public MyBot()
@@ -70,8 +73,13 @@ namespace Illya_Chan
                 "I'm pregnant, I think you're the dad."
             };
 
+            Console.Title = $"{AppName} (Discord.Net v{DiscordConfig.LibVersion})";
+
             discord = new DiscordClient(x =>
             {
+                x.AppName = AppName;
+                x.AppUrl = AppUrl;
+                x.AppVersion = "0.6";
                 x.LogLevel = LogSeverity.Info;
                 x.LogHandler = Log;
             });
@@ -79,8 +87,9 @@ namespace Illya_Chan
             //Select what prefix to use
             discord.UsingCommands(x =>
             {
-                x.PrefixChar = '-';
+                x.PrefixChar = '_';
                 x.AllowMentionPrefix = true;
+                x.HelpMode = HelpMode.Public;
             });
 
             //Gets the command service
@@ -91,7 +100,6 @@ namespace Illya_Chan
             RegisterSelfieCommand();
             RegisterRandomtextCommand();
             RegisterLoveCommand();
-            RegisterHugCommand();
             RegisterPurgeCommand();
             RegisterKickCommand();
             RegisterBanCommand();
@@ -116,9 +124,12 @@ namespace Illya_Chan
             });
         }
 
+
+
         private void RegisterPingCommand()
         {
             commands.CreateCommand("ping")
+                .Description("Bot reacts with `pong!` to check if it's working.")
                 .Do(async (e) =>
                 {
                     await e.Channel.SendMessage("pong!");
@@ -128,6 +139,7 @@ namespace Illya_Chan
         private void RegisterSelfieCommand()
         {
             commands.CreateCommand("selfie")
+                .Description("Send a cute selfie.")
                 .Do(async (e) =>
                 {
                     int randomSelfieIndex = rand.Next(Selfies.Length);
@@ -140,6 +152,7 @@ namespace Illya_Chan
         {
             commands.CreateCommand("randomtext")
                 .Alias(new string[] { "rt" }) //add alias
+                .Description("Post a random line of text.")
                 .Do(async (e) =>
                 {
                     int randomTextIndex = rand.Next(randomTexts.Length);
@@ -152,6 +165,7 @@ namespace Illya_Chan
         {
             commands.CreateCommand("Do you love me?")
                 .Alias(new string[] { "Do you love me" }) //add alias
+                .Description("Reacts with an answer.")
                         .Do(async (e) =>
                         {
                             try
@@ -173,37 +187,11 @@ namespace Illya_Chan
                         });
         }
 
-        private void RegisterHugCommand()
-        {
-            commands.CreateCommand("*Gives you a hug*")
-                    .Alias(new string[] { "*Hugs*" }) //add alias
-                    .Alias(new string[] { "*Hugs you*" }) //add alias
-                    .Do(async (e) =>
-                    {
-                        try
-                        {
-                            Role Owner = e.Server.FindRoles("Owner").FirstOrDefault();
-                            if (e.User.HasRole(Owner))
-                            {
-                                await e.Channel.SendMessage("Ohh pls Senpai stop it >///<");
-                            }
-                            else
-                            {
-                                await e.Channel.SendMessage(e.User.Mention + " Only senpai can hug me, leave me alone...");
-                            }
-                        }
-                        catch
-                        {
-                            await e.Channel.SendMessage("Aaaah a stranger is hugging me!! SENPAI HELP!! (This server does not have the `Senpai` role)");
-                        }
-                    });
-        }
-
         private void RegisterPurgeCommand()
         {
             commands.CreateCommand("purge")
-                .Alias(new string[] { "prg" }) //add alias
-                .Alias(new string[] { "clr" }) //add alias
+                .Alias(new string[] { "prune", "clr" }) //add alias
+                .Description("Deletes 50 messages.")
                 .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
                 .Do(async (e) =>
                 {
@@ -219,6 +207,7 @@ namespace Illya_Chan
             commands.CreateCommand("kick")
                 .Parameter("a", ParameterType.Unparsed)
                     .Alias(new string[] { "k" }) //add alias
+                    .Description("Kick a user")
                     .AddCheck((cm, u, ch) => u.ServerPermissions.KickMembers)
                     .Do(async (e) =>
                     {
@@ -247,6 +236,7 @@ namespace Illya_Chan
             commands.CreateCommand("ban")
                 .Parameter("a", ParameterType.Unparsed)
                     .Alias(new string[] { "b" }) //add alias
+                    .Description("Ban a user.")
                     .AddCheck((cm, u, ch) => u.ServerPermissions.BanMembers)
                     .Do(async (e) =>
                     {
@@ -270,7 +260,7 @@ namespace Illya_Chan
                     });
         }
 
-        private void Log(object sender, LogMessageEventArgs e)
+    private void Log(object sender, LogMessageEventArgs e)
         {
             Console.WriteLine(e.Message);
         }
