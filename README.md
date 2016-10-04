@@ -12,3 +12,4 @@ ___
 - [My personal website] (http://haremkingonline.xyz/)
 - [Forum] (http://dailyanimes.xyz/)
 - [Discord Server] (http://join.dailyanimes.xyz/)
+- [Website for the bot] (http://illya-chan.xyz/)
