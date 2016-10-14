@@ -136,7 +136,7 @@ namespace Illya_Chan
             //Logs in to discord with the given token in the string
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect(token);
+                await discord.Connect(token, TokenType.Bot);
                 discord.SetGame(new Game($"_commands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]"));
             });
         }
