@@ -287,17 +287,6 @@ namespace Illya_Chan
                 });
         }
 
-        private void RegisterInviteCommand()
-        {
-            commands.CreateCommand("invite")
-                .Alias(new string[] { "inv" }) //add alias
-                .Description("Sends an invite link of the bot.")
-                .Do(async (e) =>
-                {
-                    await e.Channel.SendMessage("Bots invite link: https://discordapp.com/oauth2/authorize?&client_id=223467315319013376&scope=bot&permissions=00000008");
-                });
-        }
-
         private void RegisterGameCommand()
         {
             commands.CreateCommand("setgame")
@@ -334,6 +323,17 @@ namespace Illya_Chan
                     {
                         await e.Channel.SendMessage("This command is only for the bot owner sorry.");
                     }
+                });
+        }
+
+        private void RegisterInviteCommand()
+        {
+            commands.CreateCommand("invite")
+                .Alias(new string[] { "inv" }) //add alias
+                .Description("Sends an invite link of the bot.")
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendMessage("Bots invite link: https://discordapp.com/oauth2/authorize?&client_id=223467315319013376&scope=bot&permissions=00000008");
                 });
         }
 
