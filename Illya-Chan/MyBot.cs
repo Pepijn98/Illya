@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Discord.Audio;
 using System.Xml;
 
 namespace Illya_Chan
@@ -17,11 +13,12 @@ namespace Illya_Chan
 
         Random rand;
 
-        //Makes token string for later and 2 strings for some random commands
-        public string token;
-        public Game CurrentGame { get; private set; }
-        public const string AppName = "Illya-Chan (bot)";
-        public const string AppUrl = "http://haremkingonline.xyz";
+        //Define everything we need for later
+        string cmds;
+        string token;
+        public const string AppName = "Illya-Chan";
+        public const string AppUrl = "http://illya-chan.xyz";
+        public const string AppVersion = "0.6.4 beta";
         string[] Selfies;
         string[] randomTexts;
         public MyBot()
@@ -68,18 +65,19 @@ namespace Illya_Chan
                 "UNICORNS POOPED IN MY BED!",
                 "whatever you do, don't turn off the light tonight!",
                 "Do you have a pickle?",
-                "Sorry. I'm to busy giving my unicorn a bath.",
+                "Sorry, I'm to busy giving my unicorn a bath.",
                 "Go to the bathroom and lock the door if u hear anything run!!",
                 "I'm pregnant, I think you're the dad."
             };
 
-            Console.Title = $"{AppName} (Discord.Net v{DiscordConfig.LibVersion})";
+            //Console title
+            Console.Title = $"{AppName} (App v{AppVersion}) (Discord.Net v{DiscordConfig.LibVersion})";
 
             discord = new DiscordClient(x =>
             {
                 x.AppName = AppName;
                 x.AppUrl = AppUrl;
-                x.AppVersion = "0.6";
+                x.AppVersion = AppVersion;
                 x.LogLevel = LogSeverity.Info;
                 x.LogHandler = Log;
             });
@@ -94,8 +92,8 @@ namespace Illya_Chan
 
             //Gets the command service
             commands = discord.GetService<CommandService>();
-
-            //Registers all commands
+            
+            //Register all commands
             RegisterPingCommand();
             RegisterSelfieCommand();
             RegisterRandomtextCommand();
@@ -103,6 +101,8 @@ namespace Illya_Chan
             RegisterPurgeCommand();
             RegisterKickCommand();
             RegisterBanCommand();
+            //RegisterRestartCommand();
+            RegisterCommandsCommand();
 
             //Reads token from .xml file and puts it in the token string we made earlier
             using (XmlReader reader = XmlReader.Create("token.xml"))
@@ -117,6 +117,19 @@ namespace Illya_Chan
                 }
             }
 
+            //Reads the commmand list from .xml file
+            using (XmlReader reader = XmlReader.Create("commands.xml"))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement())
+                    {
+                        reader.ReadToFollowing("cmds");
+                        cmds = reader.ReadInnerXml();
+                    }
+                }
+            }
+
             //Logs in to discord with the given token in the string
             discord.ExecuteAndWait(async () =>
             {
@@ -125,7 +138,7 @@ namespace Illya_Chan
         }
 
 
-
+        //Give all registered commands something to do
         private void RegisterPingCommand()
         {
             commands.CreateCommand("ping")
@@ -166,25 +179,24 @@ namespace Illya_Chan
             commands.CreateCommand("Do you love me?")
                 .Alias(new string[] { "Do you love me" }) //add alias
                 .Description("Reacts with an answer.")
-                        .Do(async (e) =>
+                .Do(async (e) =>
+                {
+                    try
+                    {
+                        if (e.User.Id == 93973697643155456)
                         {
-                            try
-                            {
-                                Role Owner = e.Server.FindRoles("Owner").FirstOrDefault();
-                                if (e.User.HasRole(Owner))
-                                {
-                                    await e.Channel.SendMessage("Of course Senpai!");
-                                }
-                                else
-                                {
-                                    await e.Channel.SendMessage(e.User.Mention + " NO! I only love my Senpai!");
-                                }
-                            }
-                            catch
-                            {
-                                await e.Channel.SendMessage("Who are you!? What is this!? Where am I!? Why am I here!??");
-                            }
-                        });
+                            await e.Channel.SendMessage("Of course Senpai!");
+                        }
+                        else
+                        {
+                            await e.Channel.SendMessage(e.User.Mention + " NO! I only love my Senpai!");
+                        }
+                    }
+                    catch
+                    {
+                        await e.Channel.SendMessage("Who are you!? What is this!? Where am I!? Why am I here!??");
+                    }
+               });
         }
 
         private void RegisterPurgeCommand()
@@ -206,63 +218,87 @@ namespace Illya_Chan
         {
             commands.CreateCommand("kick")
                 .Parameter("a", ParameterType.Unparsed)
-                    .Alias(new string[] { "k" }) //add alias
-                    .Description("Kick a user")
-                    .AddCheck((cm, u, ch) => u.ServerPermissions.KickMembers)
-                    .Do(async (e) =>
+                .Alias(new string[] { "k" }) //add alias
+                .Description("Kick a user")
+                .AddCheck((cm, u, ch) => u.ServerPermissions.KickMembers)
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendMessage(e.GetArg("a"));
+                    if (e.Message.MentionedUsers.Count() < 1)
                     {
-                        await e.Channel.SendMessage(e.GetArg("a"));
-                        if (e.Message.MentionedUsers.Count() < 1)
+                        await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
+                    }
+                    else
+                    {
+                        try
                         {
-                            await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
+                            await e.Message.MentionedUsers.FirstOrDefault().Kick();
+                            await e.Channel.SendMessage(e.Message.MentionedUsers.FirstOrDefault() + " was kicked!");
                         }
-                        else
+                        catch
                         {
-                            try
-                            {
-                                await e.Message.MentionedUsers.FirstOrDefault().Kick();
-                                await e.Channel.SendMessage(e.Message.MentionedUsers.FirstOrDefault() + " was kicked!");
-                            }
-                            catch
-                            {
-                                await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
-                            }
+                            await e.Channel.SendMessage(e.User.Mention + " I do not have permission to kick that user!");
                         }
-                    });
+                    }
+                });
         }
 
         private void RegisterBanCommand()
         {
             commands.CreateCommand("ban")
                 .Parameter("a", ParameterType.Unparsed)
-                    .Alias(new string[] { "b" }) //add alias
-                    .Description("Ban a user.")
-                    .AddCheck((cm, u, ch) => u.ServerPermissions.BanMembers)
-                    .Do(async (e) =>
+                .Alias(new string[] { "b" }) //add alias
+                .Description("Ban a user.")
+                .AddCheck((cm, u, ch) => u.ServerPermissions.BanMembers)
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendMessage(e.GetArg("a"));
+                    if (e.Message.MentionedUsers.Count() < 1)
                     {
-                        await e.Channel.SendMessage(e.GetArg("a"));
-                        if (e.Message.MentionedUsers.Count() < 1)
+                        await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
+                    }
+                    else
+                    {
+                        try
                         {
-                            await e.Channel.SendMessage(e.User.Mention + " That's not a valid user!");
+                            await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
+                            await e.Channel.SendMessage(e.Message.MentionedUsers.FirstOrDefault() + " was banned!");
                         }
-                        else
+                        catch
                         {
-                            try
-                            {
-                                await e.Server.Ban(e.Message.MentionedUsers.FirstOrDefault());
-                                await e.Channel.SendMessage(e.Message.MentionedUsers.FirstOrDefault() + " was banned!");
-                            }
-                            catch
-                            {
-                                await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
-                            }
+                            await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
                         }
-                    });
+                    }
+                });
         }
 
-    private void Log(object sender, LogMessageEventArgs e)
+        // Trying to figure out a restart command.
+
+        //private void RegisterRestartCommand()
+        //{
+        //    commands.CreateCommand("restart")
+        //    .Description("Restarts the bot.")
+        //    .Do(async (e) =>
+        //    {
+        //        await e.Channel.SendMessage("Restarting now");
+        //    });
+        //}
+
+        private void RegisterCommandsCommand()
         {
-            Console.WriteLine(e.Message);
+            commands.CreateCommand("commands")
+                .Alias(new string[] { "cmds" }) //add alias
+                .Description("Show all the commands the bot can do.")
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendMessage(cmds);
+                });
+        }
+
+        //Show info on the console
+        private void Log(object sender, LogMessageEventArgs e)
+        {
+            Console.WriteLine($"[{e.Severity}] [{e.Source}] {e.Message}");
         }
     }
 }
