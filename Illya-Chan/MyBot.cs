@@ -18,7 +18,7 @@ namespace Illya_Chan
         string token;
         public const string AppName = "Illya-Chan";
         public const string AppUrl = "http://illya-chan.xyz";
-        public const string AppVersion = "0.6.4 beta";
+        public const string AppVersion = "0.7.1 beta";
         string[] Selfies;
         string[] randomTexts;
         public MyBot()
@@ -103,6 +103,9 @@ namespace Illya_Chan
             RegisterBanCommand();
             //RegisterRestartCommand();
             RegisterCommandsCommand();
+            RegisterInviteCommand();
+            RegisterGameCommand();
+            RegisterResetGameCommand();
 
             //Reads token from .xml file and puts it in the token string we made earlier
             using (XmlReader reader = XmlReader.Create("token.xml"))
@@ -134,6 +137,7 @@ namespace Illya_Chan
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect(token);
+                discord.SetGame(new Game($"_commands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]"));
             });
         }
 
@@ -272,18 +276,6 @@ namespace Illya_Chan
                 });
         }
 
-        // Trying to figure out a restart command.
-
-        //private void RegisterRestartCommand()
-        //{
-        //    commands.CreateCommand("restart")
-        //    .Description("Restarts the bot.")
-        //    .Do(async (e) =>
-        //    {
-        //        await e.Channel.SendMessage("Restarting now");
-        //    });
-        //}
-
         private void RegisterCommandsCommand()
         {
             commands.CreateCommand("commands")
@@ -292,6 +284,56 @@ namespace Illya_Chan
                 .Do(async (e) =>
                 {
                     await e.Channel.SendMessage(cmds);
+                });
+        }
+
+        private void RegisterInviteCommand()
+        {
+            commands.CreateCommand("invite")
+                .Alias(new string[] { "inv" }) //add alias
+                .Description("Sends an invite link of the bot.")
+                .Do(async (e) =>
+                {
+                    await e.Channel.SendMessage("Bots invite link: https://discordapp.com/oauth2/authorize?&client_id=223467315319013376&scope=bot&permissions=00000008");
+                });
+        }
+
+        private void RegisterGameCommand()
+        {
+            commands.CreateCommand("setgame")
+                .Alias(new string[] { "set", "newgame" }) //add alias
+                .Description("Set new playing status for the bot.")
+                .Parameter("NewGame", ParameterType.Unparsed)
+                .Do(async (e) =>
+                {
+                    if (e.User.Id == 93973697643155456)
+                    {
+                        discord.SetGame(new Game(e.GetArg("NewGame")));
+                        await e.Channel.SendMessage("New playing status as been set!");
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("This command is only for the bot owner sorry.");
+                    }
+                });
+        }
+
+        private void RegisterResetGameCommand()
+        {
+            commands.CreateCommand("resetgame")
+                .Alias(new string[] { "reset" }) //add alias
+                .Description("Resets the playing status of the bot.")
+                .Do(async (e) =>
+                {
+                    if (e.User.Id == 93973697643155456)
+                    {
+                        discord.SetGame(new Game($"_commands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]"));
+                        await e.Channel.SendMessage("Playing status has been reset!");
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("This command is only for the bot owner sorry.");
+                    }
                 });
         }
 
