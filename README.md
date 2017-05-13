@@ -13,3 +13,5 @@ ___
 - [Forum] (http://dailyanimes.xyz/)
 - [Discord Server] (http://join.dailyanimes.xyz/)
 - [Website for the bot] (http://illya-chan.xyz/)
+
+# This project is not being continued and will not be updated anymore.
