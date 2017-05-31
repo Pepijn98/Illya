@@ -2,10 +2,7 @@
 using System.Linq;
 using Discord;
 using Discord.Commands;
-using Discord.Commands.Permissions.Levels;
-using Discord.Modules;
 using System.Xml;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Illya_Chan
@@ -18,9 +15,8 @@ namespace Illya_Chan
         Random rand;
 
         // Define everything we need for later
-        string cmds;
-        string cmds2;
         string token;
+        char prefix = '.';
         public const string AppName = "Illya-Chan";
         public const string AppUrl = "http://illya-chan.xyz";
         public const string AppVersion = "0.9.2 beta";
@@ -33,31 +29,31 @@ namespace Illya_Chan
             // Adds images for the selfie commands
             Selfies = new string[]
             {
-                "selfie/Illya_1.jpg",
-                "selfie/Illya_2.jpg",
-                "selfie/Illya_3.jpg",
-                "selfie/Illya_4.jpg",
-                "selfie/Illya_5.jpg",
-                "selfie/Illya_6.jpg",
-                "selfie/Illya_7.jpg",
-                "selfie/Illya_8.jpg",
-                "selfie/Illya_9.jpg",
-                "selfie/Illya_10.jpg",
-                "selfie/Illya_11.jpg",
-                "selfie/Illya_12.jpg",
-                "selfie/Illya_13.jpg",
-                "selfie/Illya_14.jpg",
-                "selfie/Illya_15.jpg",
-                "selfie/Illya_16.jpg",
-                "selfie/Illya_17.jpg",
-                "selfie/Illya_18.jpg",
-                "selfie/Illya_19.jpg",
-                "selfie/Illya_20.jpg",
-                "selfie/Illya_21.jpg",
-                "selfie/Illya_22.jpg",
-                "selfie/Illya_23.jpg",
-                "selfie/Illya_24.jpg",
-                "selfie/Illya_25.jpg"
+                "./selfie/Illya_1.jpg",
+                "./selfie/Illya_2.jpg",
+                "./selfie/Illya_3.jpg",
+                "./selfie/Illya_4.jpg",
+                "./selfie/Illya_5.jpg",
+                "./selfie/Illya_6.jpg",
+                "./selfie/Illya_7.jpg",
+                "./selfie/Illya_8.jpg",
+                "./selfie/Illya_9.jpg",
+                "./selfie/Illya_10.jpg",
+                "./selfie/Illya_11.jpg",
+                "./selfie/Illya_12.jpg",
+                "./selfie/Illya_13.jpg",
+                "./selfie/Illya_14.jpg",
+                "./selfie/Illya_15.jpg",
+                "./selfie/Illya_16.jpg",
+                "./selfie/Illya_17.jpg",
+                "./selfie/Illya_18.jpg",
+                "./selfie/Illya_19.jpg",
+                "./selfie/Illya_20.jpg",
+                "./selfie/Illya_21.jpg",
+                "./selfie/Illya_22.jpg",
+                "./selfie/Illya_23.jpg",
+                "./selfie/Illya_24.jpg",
+                "./selfie/Illya_25.jpg"
             };
 
             // Adds texts for the randome text command
@@ -74,7 +70,6 @@ namespace Illya_Chan
                 "Go to the bathroom and lock the door if u hear anything run!!",
                 "I'm pregnant, I think you're the dad."
             };
-
             // Console title
             Console.Title = $"{AppName} (App v{AppVersion}) (Discord.Net v{DiscordConfig.LibVersion})";
 
@@ -83,6 +78,7 @@ namespace Illya_Chan
                 x.AppName = AppName;
                 x.AppUrl = AppUrl;
                 x.AppVersion = AppVersion;
+                x.ReconnectDelay = 5;
                 x.LogLevel = LogSeverity.Info;
                 x.LogHandler = Log;
             });
@@ -90,9 +86,11 @@ namespace Illya_Chan
             // Select what prefix to use
             discord.UsingCommands(x =>
             {
-                x.PrefixChar = '_';
+                
+                x.PrefixChar = prefix;
                 x.AllowMentionPrefix = true;
                 x.HelpMode = HelpMode.Public;
+                
             });
 
             // Gets the command service
@@ -106,7 +104,6 @@ namespace Illya_Chan
             RegisterPurgeCommand();
             RegisterKickCommand();
             RegisterBanCommand();
-            RegisterCommandsCommand();
             RegisterInviteCommand();
             RegisterDisconnectCommand();
             RegisterSetGroup();
@@ -127,37 +124,12 @@ namespace Illya_Chan
                 }
             }
 
-            // Reads the commmand list from .xml file
-            using (XmlReader reader = XmlReader.Create("commands.xml"))
-            {
-                while (reader.Read())
-                {
-                    if (reader.IsStartElement())
-                    {
-                        reader.ReadToFollowing("cmds");
-                        cmds = reader.ReadInnerXml();
-                    }
-                }
-            }
-
-            // Reads the 2nd commmand list from .xml file
-            using (XmlReader reader = XmlReader.Create("commands2.xml"))
-            {
-                while (reader.Read())
-                {
-                    if (reader.IsStartElement())
-                    {
-                        reader.ReadToFollowing("cmds");
-                        cmds2 = reader.ReadInnerXml();
-                    }
-                }
-            }
-
             // Logs in to discord with the given token in the string
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect(token, TokenType.Bot);
-                discord.SetGame(new Game($"_commands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]"));
+                Console.WriteLine($"Current prefix is: [{prefix}]");
+                discord.SetGame(new Game($"Icommands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]"));
             });
         }
 
@@ -178,8 +150,11 @@ namespace Illya_Chan
                 .Description("Send a cute selfie.")
                 .Do(async (e) =>
                 {
+                    Console.WriteLine("[" + e.User.Name + "] Used the Iselfie command.");
                     int randomSelfieIndex = rand.Next(Selfies.Length);
+                    //var fileStream = new FileStream(Selfies[randomSelfieIndex], FileMode.Open);
                     string selfieToPost = Selfies[randomSelfieIndex];
+                    //await e.Channel.SendFile(fileStream);
                     await e.Channel.SendFile(selfieToPost);
                 });
         }
@@ -187,7 +162,7 @@ namespace Illya_Chan
         private void RegisterRandomtextCommand()
         {
             commands.CreateCommand("randomtext")
-                .Alias(new string[] { "rt" }) // add alias
+                .Alias(new string[] { "randtxt", "rtxt" }) // add alias
                 .Description("Post a random line of text.")
                 .Do(async (e) =>
                 {
@@ -225,13 +200,15 @@ namespace Illya_Chan
         private void RegisterPurgeCommand()
         {
             commands.CreateCommand("purge")
-                .Alias(new string[] { "prune", "clr" }) // add alias
-                .Description("Deletes 50 messages.")
+                .Parameter("number", ParameterType.Unparsed)
+                .Alias(new string[] { "prune" })
+                .Description("Deletes the number of messages specified.")
                 .AddCheck((cm, u, ch) => u.ServerPermissions.ManageMessages)
                 .Do(async (e) =>
                 {
+                    int number = int.Parse(e.Args[0]);
                     Message[] messagesToDelete;
-                    messagesToDelete = await e.Channel.DownloadMessages(50);
+                    messagesToDelete = await e.Channel.DownloadMessages(number + 1);
 
                     await e.Channel.DeleteMessages(messagesToDelete);
                 });
@@ -241,7 +218,6 @@ namespace Illya_Chan
         {
             commands.CreateCommand("kick")
                 .Parameter("a", ParameterType.Unparsed)
-                .Alias(new string[] { "k" }) // add alias
                 .Description("Kick a user")
                 .AddCheck((cm, u, ch) => u.ServerPermissions.KickMembers)
                 .Do(async (e) =>
@@ -270,7 +246,6 @@ namespace Illya_Chan
         {
             commands.CreateCommand("ban")
                 .Parameter("a", ParameterType.Unparsed)
-                .Alias(new string[] { "b" }) // add alias
                 .Description("Ban a user.")
                 .AddCheck((cm, u, ch) => u.ServerPermissions.BanMembers)
                 .Do(async (e) =>
@@ -292,19 +267,6 @@ namespace Illya_Chan
                             await e.Channel.SendMessage(e.User.Mention + " I do not have permission to ban that user!");
                         }
                     }
-                });
-        }
-
-        private void RegisterCommandsCommand()
-        {
-            commands.CreateCommand("commands")
-                .Alias(new string[] { "cmds" }) // add alias
-                .Description("Show all the commands the bot can do.")
-                .Do(async (e) =>
-                {
-                    await e.User.SendMessage(cmds);
-                    await e.User.SendMessage(cmds2);
-                    await e.Channel.SendMessage(e.User.Mention + " Check your DM :wink:");
                 });
         }
 
@@ -435,7 +397,7 @@ namespace Illya_Chan
                     {
                         if (e.User.Id == 93973697643155456)
                         {
-                            string game = $"_commands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]";
+                            string game = $"Icommands [bot v{AppVersion} | Discord.Net v{DiscordConfig.LibVersion}]";
                             discord.SetGame(new Game(game));
                             await e.Channel.SendMessage($"Playing status has been reset to: **{game}**");
                         }
@@ -451,7 +413,6 @@ namespace Illya_Chan
         {
             commands.CreateCommand("say")
                 .Description("Make the bot say something.")
-                .Alias("s")
                 .Parameter("text", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
@@ -466,7 +427,7 @@ namespace Illya_Chan
             {
                 i.CreateCommand("user")
                     .Description("Show the info of the user.")
-                    .Alias("u")
+                    .Alias(new string[] { "u" })
                     .Do(async (e) =>
                     {
                         var userName = e.User.Name;
@@ -475,25 +436,24 @@ namespace Illya_Chan
                         var userOn = e.User.LastOnlineAt;
                         var userJoin = e.User.JoinedAt;
                         var userAva = e.User.AvatarUrl;
-                        string[] lines = { $"`NameDiscrim: `**{userName}#{userDis}**",
-                            $"`Id: `**{userId}**",
-                            $"`Last online: `**{userOn}**",
-                            $"`Joined at: `**{userJoin}**",
-                            $"`AvatarUrl: `**{userAva}**" };
+                        var lines = $"`NameDiscrim: `**{userName}#{userDis}**\n"+
+                                    $"`Id: `**{userId}**\n"+
+                                    $"`Last online: `**{userOn}**\n"+
+                                    $"`Joined at: `**{userJoin}**\n"+
+                                    $"`AvatarUrl: `**{userAva}**";
 
-                        foreach (string line in lines)
-                            await e.Channel.SendMessage(line);
+                            await e.Channel.SendMessage(lines);
                     });
                 i.CreateCommand("id")
                     .Description("Show the ID of the user.")
                     .Do(async (e) =>
                     {
                         var userId = e.User.Id;
-                        await e.Channel.SendMessage(e.User.Mention + $"Your ID is: **{userId}**");
+                        await e.Channel.SendMessage(e.User.Mention + $" Your ID is: **{userId}**");
                     });
                 i.CreateCommand("server")
                     .Description("Show the info of the server.")
-                    .Alias("s")
+                    .Alias(new string[] { "s" })
                     .Do(async (e) =>
                     {
                         var serverName = e.Server.Name;
@@ -501,14 +461,13 @@ namespace Illya_Chan
                         var serverUcount = e.Server.UserCount;
                         var serverIconurl = e.Server.IconUrl;
                         var serverId = e.Server.Id;
-                        string[] lines = { $"`Server name: `**{serverName}**",
-                            $"`Owner: `**{serverOwner}**",
-                            $"`Member count: `**{serverUcount}**",
-                            $"`IconUrl: `**{serverIconurl}**",
-                            $"`Server Id: `**{serverId}**" };
+                        var lines = $"`Server name: `**{serverName}**\n"+
+                                    $"`Owner: `**{serverOwner}**\n"+
+                                    $"`Member count: `**{serverUcount}**\n"+
+                                    $"`IconUrl: `**{serverIconurl}**\n"+
+                                    $"`Server Id: `**{serverId}**\n";
 
-                        foreach (string line in lines)
-                            await e.Channel.SendMessage(line);
+                            await e.Channel.SendMessage(lines);
                     });
             });
         }
