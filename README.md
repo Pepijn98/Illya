@@ -1,6 +1,6 @@
-# Illya-Chan_Bot
+# Illya
 #### (WIP) Discord bot made for my own server.<br/>
-#### Creator: Pepijn (HaremKing)
+#### Creator: Pepijn (${kurozero}#0569)
 
 ___
 
@@ -9,9 +9,5 @@ Any feedback, suggestions w/e is always welcome!
 
 ___
 
-- [My personal website] (http://haremkingonline.xyz/)
-- [Forum] (http://dailyanimes.xyz/)
-- [Discord Server] (http://join.dailyanimes.xyz/)
-- [Website for the bot] (http://illya-chan.xyz/)
-
-# This project is not being continued and will not be updated anymore.
+- [My personal website](https://kurozero.xyz)
+- [Discord Server](https://discord.gg/Vf4ne5b)
