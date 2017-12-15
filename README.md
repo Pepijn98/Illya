@@ -1,6 +1,5 @@
 # Illya
-#### (WIP) Discord bot made for my own server.<br/>
-#### Creator: Pepijn (${kurozero}#0569)
+#### The project has been suspended for awhile but a big update coming soon!
 
 ___
 
