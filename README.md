@@ -1,5 +1,6 @@
 # Illya
-#### The project has been suspended for awhile but a big update coming soon!
+#### The project has been suspended
+To see the rewrite go to https://github.com/Chaldea-devs/Mashu
 
 ___
 
@@ -9,4 +10,4 @@ Any feedback, suggestions w/e is always welcome!
 ___
 
 - [My personal website](https://kurozero.xyz)
-- [Discord Server](https://discord.gg/Vf4ne5b)
+- [Discord Server](https://discord.gg/p895czC)
